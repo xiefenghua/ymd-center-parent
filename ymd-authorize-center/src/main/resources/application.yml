@@ -1,0 +1,18 @@
+server:
+  port: 9885
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: @profiles.active@
+  application:
+    name: ymd-authorize-center
+
+# mybatis-plus配置
+mybatis-plus:
+  type-aliases-package: com.ymd.cloud.authorizeCenter.model.vo
+  mapper-locations: classpath:mapper/*.xml,mapper/*/*.xml
+
+logging:
+  level:
+    com.ymd.cloud.authorizeCenter.mapper: debug

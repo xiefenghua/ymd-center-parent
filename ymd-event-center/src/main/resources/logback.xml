@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration >
+	<contextName>ymd-center-server</contextName>
+
+	<substitutionProperty name="basePath" value="/var/log/ymd/center" />
+	<substitutionProperty name="logName" value="ymd-event-center"/>
+	<substitutionProperty name="logLevel" value="INFO" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%logger{1}:%line]:%msg%n</pattern>
+		</layout>
+	</appender>
+
+	<!-- 按照时间，大小生成日志文件 -->
+	<appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${basePath}/${logName}.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<!-- daily rollover ，每小时钟生成一份日志文件-->
+			<fileNamePattern>${basePath}/${logName}.%d{yyyy-MM-dd.HH}.%i.log</fileNamePattern>
+			<!--设置保存10天 一天24个文件，一小时生成一个-->
+			<MaxHistory>240</MaxHistory>
+			<!--给定日志文件大小，超过指定的大小就新建一个日志文件-->
+			<maxFileSize>500MB</maxFileSize>
+			<totalSizeCap>20GB</totalSizeCap>  <!-- 总日志大小 -->
+			<cleanHistoryOnStart>true</cleanHistoryOnStart>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%logger{1}:%line]:%msg%n
+			</Pattern>
+		</layout>
+	</appender>
+	<logger name="org.mybatis.spring" level="OFF"/>
+	<root level="${logLevel}">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="LOGFILE" />
+	</root>
+</configuration>

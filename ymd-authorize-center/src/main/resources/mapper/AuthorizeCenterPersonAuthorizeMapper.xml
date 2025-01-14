@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterPersonAuthorizeMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterPersonAuthorize" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <id column="partition_date" property="partitionDate" jdbcType="INTEGER" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="lock_id" property="lockId" jdbcType="VARCHAR" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_identity" property="userIdentity" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectPersonAuthorizeListByDeviceUser" resultMap="BaseResultMap">
+    select * from t_authorize_center_person_authorize where
+    status=1
+    <if test="orgId!=null and orgId!=''">
+      and org_id=#{orgId}
+    </if>
+    and lock_id =#{lockId} and user_account =#{userAccount}
+    and user_identity=#{userIdentity}
+    limit 1;
+  </select>
+</mapper>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.third.ThirdServerAuthReturnLogMapper">
+
+    <select id="selectReturnLogBySerialNo" resultType="com.ymd.cloud.authorizeCenter.model.third.ThirdServerAuthReturnLog">
+		select * from t_third_server_auth_return_log where method=#{method} and serialNo = #{serialNo}
+		and msgId=#{msgId} order by createTime desc limit 1;
+	</select>
+	<delete id="delBefore1Month">
+    	delete from t_third_server_auth_return_log where createTime <![CDATA[<]]>  DATE_SUB(NOW(),INTERVAL 1 MONTH);
+  	</delete>
+</mapper>

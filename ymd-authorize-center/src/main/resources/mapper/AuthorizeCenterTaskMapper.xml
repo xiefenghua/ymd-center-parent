@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTask" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="task_no" property="taskNo" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="auth_start_time" property="authStartTime" jdbcType="TIMESTAMP" />
+    <result column="auth_end_time" property="authEndTime" jdbcType="TIMESTAMP" />
+    <result column="task_count" property="taskCount" jdbcType="INTEGER" />
+    <result column="auth_success_count" property="authSuccessCount" jdbcType="INTEGER" />
+    <result column="auth_failure_count" property="authFailureCount" jdbcType="INTEGER" />
+    <result column="vali_failure_count" property="valiFailureCount" jdbcType="INTEGER" />
+    <result column="retry_count" property="retryCount" jdbcType="INTEGER" />
+    <result column="task_type" property="taskType" jdbcType="VARCHAR" />
+    <result column="task_status" property="taskStatus" jdbcType="TINYINT" />
+    <result column="lock_id" property="lockId" jdbcType="LONGVARCHAR" />
+    <result column="user_target" property="userTarget" jdbcType="LONGVARCHAR" />
+    <result column="exception_desc" property="exceptionDesc" jdbcType="LONGVARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="selectListPage" resultMap="BaseResultMap">
+    select * from t_authorize_center_task where org_id=#{orgId}
+    <if test="startDate != null and startDate != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+    </if>
+    <if test="endDate != null and endDate != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    </if>
+    <if test="taskNo !=null  and taskNo != ''">
+      and task_no like CONCAT('%',#{taskNo},'%' )
+    </if>
+    <if test="taskType != null  and taskType != ''">
+      and task_type =#{taskType}
+    </if>
+    <if test="userTarget != null  and userTarget != ''">
+      and user_target like CONCAT('%',#{userTarget},'%' )
+    </if>
+    <if test="operator != null  and operator != ''">
+      and operator like CONCAT('%',#{operator},'%' )
+    </if>
+    <if test="taskStatus != null">
+      and task_status =#{taskStatus}
+    </if>
+    <if test="lockId !=null and lockId != ''">
+      and lock_id =#{lockId}
+    </if>
+  </select>
+
+  <select id="selectByTaskNo" resultMap="BaseResultMap">
+     select * from t_authorize_center_task where task_no=#{taskNo} limit 1;
+  </select>
+  <select id="selectTaskAuthCountNull" resultMap="BaseResultMap">
+         select * from t_authorize_center_task where auth_success_count is null or auth_failure_count is null  or vali_failure_count is null
+  </select>
+
+  <select id="selectNoFinishTaskByTime" resultMap="BaseResultMap">
+    select * from t_authorize_center_task where (task_status=0 or task_status=2 or task_status=3)
+    and retry_count <![CDATA[<]]> #{retryCount} order by update_time asc limit #{pageSize}
+  </select>
+
+  <update id="updateSyncStatusAndTaskAuthCountByTaskNo" parameterType="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTask">
+    update t_authorize_center_task
+    set task_status=#{taskStatus}
+    <if test="taskCount!=null and taskCount != 0">
+      ,task_count=#{taskCount}
+    </if>
+    where task_no=#{taskNo}
+  </update>
+  <update id="updateUpdateTimeByTaskNo" parameterType="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTask">
+    update t_authorize_center_task set update_time=now() where task_no=#{taskNo}
+  </update>
+  <update id="updateSyncStatusByTaskNo" parameterType="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTask">
+    update t_authorize_center_task
+    set task_status=#{taskStatus}
+    <if test="exceptionDesc!=null and exceptionDesc != ''">
+      ,exception_desc=#{exceptionDesc}
+    </if>
+    where task_no=#{taskNo}
+  </update>
+  <update id="updateDescByTaskNo" parameterType="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTask">
+    update t_authorize_center_task set exception_desc=#{exceptionDesc} where task_no=#{taskNo}
+  </update>
+  <update id="updateAuthSuccessCountByTaskNo">
+    update t_authorize_center_task set auth_success_count=auth_success_count+1 where task_no=#{taskNo}
+  </update>
+  <update id="updateAuthFailureCountByTaskNo">
+    update t_authorize_center_task set auth_failure_count=auth_failure_count+1 where task_no=#{taskNo}
+  </update>
+  <update id="updateRetryCountByTaskNo">
+    update t_authorize_center_task set retry_count=retry_count+1 where task_no=#{taskNo}
+  </update>
+  <update id="updateExceptionNull">
+    update t_authorize_center_task set exception_desc=null where task_sync_status=2
+  </update>
+  <update id="updateAuthCountByTaskNo" parameterType="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTask">
+    update t_authorize_center_task
+    set
+    task_count=#{taskCount},
+    auth_success_count=#{authSuccessCount},
+    auth_failure_count=#{authFailureCount},
+    vali_failure_count=#{valiFailureCount}
+    where task_no=#{taskNo}
+  </update>
+  <delete id="delTaskBefore1Month">
+    delete from t_authorize_center_task  where create_time <![CDATA[<]]>  DATE_SUB(NOW(),INTERVAL 1 MONTH) or retry_count>20;
+  </delete>
+</mapper>

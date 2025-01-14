@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterAuthorizeRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterAuthorizeRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="person_auth_id" property="personAuthId" jdbcType="BIGINT" />
+    <result column="auth_equal_uuid" property="authEqualUuid" jdbcType="VARCHAR" />
+    <result column="uid" property="uid" jdbcType="VARCHAR" />
+    <result column="lock_id" property="lockId" jdbcType="VARCHAR" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="auth_channel_module_type" property="authChannelModuleType" jdbcType="VARCHAR" />
+    <result column="auth_channel_type" property="authChannelType" jdbcType="VARCHAR" />
+    <result column="auth_channel_alias" property="authChannelAlias" jdbcType="VARCHAR" />
+    <result column="auth_channel_value" property="authChannelValue" jdbcType="LONGVARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="flag" property="flag" jdbcType="TINYINT" />
+    <result column="freeze_status" property="freezeStatus" jdbcType="TINYINT" />
+    <result column="auth_desc" property="authDesc" jdbcType="VARCHAR" />
+    <result column="auth_resource" property="authResource" jdbcType="VARCHAR" />
+    <result column="is_group" property="isGroup" jdbcType="TINYINT" />
+    <result column="auth_channel_name" property="authChannelName" jdbcType="VARCHAR" />
+    <result column="auth_extend" property="authExtend" jdbcType="VARCHAR" />
+    <result column="partition_date" property="partitionDate" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="includeTimeSql">
+    <if test="startDate != null or endDate != null">
+      and (
+          (
+          <if test="startDate != null">
+            start_time>=#{startDate}
+          </if>
+          <if test="endDate != null">
+            and start_time &lt;= #{endDate}
+          </if>
+          )
+          or
+          (
+          <if test="startDate != null">
+            end_time>#{startDate}
+          </if>
+          <if test="endDate != null">
+            and end_time &lt;= #{endDate}
+          </if>
+          )
+          or
+          (
+          <if test="startDate != null">
+            start_time&lt;=#{startDate}
+          </if>
+          <if test="endDate != null">
+            and end_time >= #{endDate}
+          </if>
+          )
+          or
+          (
+          <if test="startDate != null">
+            start_time>=#{startDate}
+          </if>
+          <if test="endDate != null">
+            and end_time &lt;= #{endDate}
+          </if>
+          )
+      )
+    </if>
+  </sql>
+  <select id="selectAuthListPage" resultMap="BaseResultMap">
+    select * from t_authorize_center_authorize_record ac_ar where status=1
+      <if test="startDate != null and startDate != ''">
+        AND DATE_FORMAT(ac_ar.create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+      </if>
+      <if test="endDate != null and endDate != ''">
+        AND DATE_FORMAT(ac_ar.create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+      </if>
+      <if test="userName != null  and userName != ''">
+        and ac_ar.user_name =#{userName}
+      </if>
+      <if test="userAccount != null  and userAccount != ''">
+        and ac_ar.user_account like CONCAT('%',#{userAccount},'%' )
+      </if>
+      <if test="authChannelType != null  and authChannelType != ''">
+        and ac_ar.auth_channel_type  =#{authChannelType}
+      </if>
+      <if test="authChannelModuleType != null  and authChannelModuleType != ''">
+          and auth_channel_module_type  =#{authChannelModuleType}
+      </if>
+  </select>
+
+  <select id="selectAuthListByDeviceUser" resultMap="BaseResultMap">
+    select * from t_authorize_center_authorize_record where status=1
+      <if test="lockId != null  and lockId != ''">
+        and lock_id =#{lockId}
+      </if>
+      <if test="userAccount != null  and userAccount != ''">
+        and user_account =#{userAccount}
+      </if>
+      <if test="authChannelModuleType != null  and authChannelModuleType != ''">
+          and auth_channel_module_type  =#{authChannelModuleType}
+      </if>
+      <if test="authChannelType != null  and authChannelType != ''">
+        and auth_channel_type  =#{authChannelType}
+      </if>
+      <if test="authChannelValue != null  and authChannelValue != ''">
+          and auth_channel_value =#{authChannelValue}
+      </if>
+  </select>
+  <select id="selectExistByEqualUuid" resultType="int">
+    select count(1) from t_authorize_center_authorize_record where status=1 and auth_equal_uuid=#{authEqualUuid}
+  </select>
+
+  <select id="selectEqualAuthListByLockAndUserAndType" resultMap="BaseResultMap">
+    select * from t_authorize_center_authorize_record where status=1 and lock_id =#{lockId}
+    <if test="userAccount != null  and userAccount != ''">
+      and user_account =#{userAccount}
+    </if>
+    <if test="authChannelModuleType != null  and authChannelModuleType != ''">
+      and auth_channel_module_type  =#{authChannelModuleType}
+    </if>
+    <if test="authChannelType != null  and authChannelType != ''">
+      and auth_channel_type  =#{authChannelType}
+    </if>
+    <if test="authChannelValue != null  and authChannelValue != ''">
+      and auth_channel_value =#{authChannelValue}
+    </if>
+    <include refid="includeTimeSql"/>
+  </select>
+  <select id="selectIncrementEqualAuthListByLockAndUserAndType" resultMap="BaseResultMap">
+    select ar.*,acas.sync sync from t_authorize_center_authorize_record ar inner join t_authorize_center_authorize_sync acas on ar.id=acas.auth_id
+    where ar.status=1 and ar.lock_id =#{lockId} and acas.sync=0
+    <if test="authChannelModuleType != null  and authChannelModuleType != ''">
+      and ar.auth_channel_module_type =#{authChannelModuleType}
+    </if>
+    <include refid="includeTimeSql"/>
+  </select>
+
+    <select id="selectAllNoSyncAuthList" resultType="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterAuthorizeSync">
+        select ar.lock_id lockId,acas.update_time,acas.id from t_authorize_center_authorize_record ar inner join t_authorize_center_authorize_sync acas on ar.id=acas.auth_id
+        where ar.status=1 and acas.sync=0 <include refid="includeTimeSql"/> order by acas.update_time
+    </select>
+
+
+
+</mapper>

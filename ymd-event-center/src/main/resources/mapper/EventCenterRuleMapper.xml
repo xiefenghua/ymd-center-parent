@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.eventCenter.mapper.EventCenterRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.eventCenter.model.vo.EventCenterRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="rule_name" property="ruleName" jdbcType="VARCHAR" />
+    <result column="rule_remark" property="ruleRemark" jdbcType="VARCHAR" />
+    <result column="rule_level" property="ruleLevel" jdbcType="VARCHAR" />
+    <result column="rule_action" property="ruleAction" jdbcType="VARCHAR" />
+    <result column="rule_status" property="ruleStatus" jdbcType="TINYINT" />
+    <result column="rule_is_all" property="ruleIsAll" jdbcType="TINYINT" />
+    <result column="create_auth_user_id" property="createAuthUserId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <select id="selectEventCenterRulePage"  resultMap="BaseResultMap">
+    select distinct * from ymd_event_center_rule where rule_status=1
+    <if test="ruleName != null and ruleName != ''">
+      and rule_name like concat('%',#{ruleName},'%')
+    </if>
+    <if test="startTime != null and startTime != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+    </if>
+    <if test="endTime != null and endTime != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+    </if>
+    order by create_time desc
+  </select>
+
+  <select id="selectIsAllExist" resultMap="BaseResultMap">
+    select * from ymd_event_center_rule where rule_status=1 and rule_is_all=1
+  </select>
+
+
+</mapper>

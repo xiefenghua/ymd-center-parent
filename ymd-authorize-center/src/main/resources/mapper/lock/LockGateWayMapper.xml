@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.lock.LockGateWayMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.lock.LockGateWay" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+      <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="gateId" property="gateid" jdbcType="VARCHAR" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+    <result column="gateName" property="gatename" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="productId" property="productid" jdbcType="VARCHAR" />
+    <result column="deviceSecret" property="devicesecret" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="CHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="model" property="model" jdbcType="VARCHAR" />
+    <result column="loraChannel" property="lorachannel" jdbcType="INTEGER" />
+    <result column="loraCfgByte" property="loracfgbyte" jdbcType="INTEGER" />
+    <result column="updateTime" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="softVersion" property="softversion" jdbcType="VARCHAR" />
+  </resultMap>
+
+    <select id="queryInfoByGateId" resultMap="BaseResultMap">
+      select *  from lock.t_hzbit_lock_gateway g where g.gateId = #{gateId}
+    </select>
+</mapper>

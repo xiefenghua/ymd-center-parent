@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterAuthorizeSyncMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterAuthorizeSync" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="auth_id" property="authId" jdbcType="BIGINT" />
+    <result column="auth_equal_uuid" property="authEqualUuid" jdbcType="VARCHAR" />
+    <result column="sync_opt_type" property="syncOptType" jdbcType="VARCHAR" />
+    <result column="sync_name" property="syncName" jdbcType="VARCHAR" />
+    <result column="sync" property="sync" jdbcType="TINYINT" />
+    <result column="upload_status" property="uploadStatus" jdbcType="TINYINT" />
+    <result column="push_status" property="pushStatus" jdbcType="TINYINT" />
+    <result column="partition_date" property="partitionDate" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="selectSyncByAuthId" resultMap="BaseResultMap">
+    select * from t_authorize_center_authorize_sync where auth_id =#{authId}
+  </select>
+  <select id="selectSyncByAuthEqualUuid" resultMap="BaseResultMap">
+    select * from t_authorize_center_authorize_sync where auth_equal_uuid =#{authEqualUuid}
+  </select>
+</mapper>

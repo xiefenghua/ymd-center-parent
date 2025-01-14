@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterAuthorizeLockChangeMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterAuthorizeLockChange" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="lock_id" property="lockId" jdbcType="VARCHAR" />
+    <result column="card_has_change_version" property="cardHasChangeVersion" jdbcType="INTEGER" />
+    <result column="card_pre_change_version" property="cardPreChangeVersion" jdbcType="INTEGER" />
+    <result column="pwd_has_change_version" property="pwdHasChangeVersion" jdbcType="INTEGER" />
+    <result column="pwd_pre_change_version" property="pwdPreChangeVersion" jdbcType="INTEGER" />
+    <result column="face_has_change_version" property="faceHasChangeVersion" jdbcType="INTEGER" />
+    <result column="face_pre_change_version" property="facePreChangeVersion" jdbcType="INTEGER" />
+    <result column="finger_has_change_version" property="fingerHasChangeVersion" jdbcType="INTEGER" />
+    <result column="finger_pre_change_version" property="fingerPreChangeVersion" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+
+  </resultMap>
+  <select id="selectChangeByLockId" resultMap="BaseResultMap">
+    select * from t_authorize_center_authorize_lock_change where lock_id =#{lockId}
+  </select>
+  <update id="updateCardChangeByLockId" >
+    update t_authorize_center_authorize_lock_change set card_has_change_version=card_has_change_version+1,update_time=now() where lock_id =#{lockId}
+  </update>
+  <update id="updatePwdChangeByLockId" >
+    update t_authorize_center_authorize_lock_change set pwd_has_change_version=pwd_has_change_version+1,update_time=now() where lock_id =#{lockId}
+  </update>
+  <update id="updateFaceChangeByLockId" >
+    update t_authorize_center_authorize_lock_change set face_has_change_version=face_has_change_version+1,update_time=now() where lock_id =#{lockId}
+  </update>
+  <update id="updateFingerChangeByLockId" >
+    update t_authorize_center_authorize_lock_change set finger_has_change_version=finger_has_change_version+1,update_time=now() where lock_id =#{lockId}
+  </update>
+
+</mapper>

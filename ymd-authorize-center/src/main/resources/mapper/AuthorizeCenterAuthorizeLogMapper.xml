@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterAuthorizeLogMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterAuthorizeLog" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="lock_id" property="lockId" jdbcType="VARCHAR" />
+    <result column="module" property="module" jdbcType="VARCHAR" />
+    <result column="operate_type" property="operateType" jdbcType="VARCHAR" />
+    <result column="operate_name" property="operateName" jdbcType="VARCHAR" />
+    <result column="operation" property="operation" jdbcType="VARCHAR" />
+    <result column="req_param" property="reqParam" jdbcType="VARCHAR" />
+    <result column="resp_result" property="respResult" jdbcType="VARCHAR" />
+    <result column="partition_date" property="partitionDate" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <delete id="delBefore6Month">
+    delete from t_authorize_center_authorize_log  where create_time <![CDATA[<]]>  DATE_SUB(NOW(),INTERVAL 6 MONTH);
+  </delete>
+</mapper>

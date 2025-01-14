@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.eventCenter.mapper.EventCenterTopicTaskRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.eventCenter.model.vo.EventCenterTopicTaskRecord" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="topic" property="topic" jdbcType="VARCHAR" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="task_no" jdbcType="VARCHAR" property="taskNo" />
+    <result column="exchange" jdbcType="VARCHAR" property="exchange" />
+    <result column="routing_key" jdbcType="VARCHAR" property="routingKey" />
+    <result column="weight" jdbcType="BIGINT" property="weight" />
+    <result column="delay_time" jdbcType="INTEGER" property="delayTime" />
+    <result column="push_time" jdbcType="TIMESTAMP" property="pushTime" />
+    <result column="mq_message_id" jdbcType="VARCHAR" property="mqMessageId" />
+    <result column="mq_return_code" jdbcType="VARCHAR" property="mqReturnCode" />
+    <result column="retry_count" jdbcType="INTEGER" property="retryCount" />
+    <result column="error_retry_count" jdbcType="INTEGER" property="errorRetryCount" />
+    <result column="return_body" jdbcType="VARCHAR" property="returnBody" />
+    <result column="push_status" jdbcType="TINYINT" property="pushStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="task_msg_body" jdbcType="LONGVARCHAR" property="taskMsgBody" />
+    <result column="create_auth_user_id" property="createAuthUserId" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectEventCenterTopicTaskRecordPage"  resultMap="BaseResultMap">
+    select distinct * from ymd_event_center_topic_task_record
+    <where>
+      <if test="topic != null and topic != ''">
+        and topic like concat('%',#{topic},'%')
+      </if>
+      <if test="taskNo != null and taskNo != ''">
+        and  task_no=#{taskNo}
+      </if>
+      <if test="startTime != null and startTime != ''">
+        AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+      </if>
+      <if test="endTime != null and endTime != ''">
+        AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+  <select id="selectEventCenterTopicTaskRecordByTopicAndTaskNo"  resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_task_record where topic=#{topic} and task_no=#{taskNo} limit 1
+  </select>
+  <select id="selectDelayTaskByMessageId" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_task_record where mq_message_id=#{mqMessageId} limit 1
+  </select>
+  <select id="selectDelayTaskByTaskNo" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_task_record where task_no=#{taskNo} limit 1
+  </select>
+  <select id="selectLastNotPushDelayTask" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_task_record where push_status=0 order by create_time asc limit 1
+  </select>
+  <select id="selectDelayTaskByWeight" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_task_record where retry_count <![CDATA[<]]> #{retryCount} order by weight,create_time asc limit #{pageSize}
+  </select>
+  <update id="updatePushStatusByTaskNo">
+    update ymd_event_center_topic_task_record set push_time=#{pushTime},push_status=#{pushStatus} where task_no=#{taskNo}
+  </update>
+  <update id="updateErrorRetryCountByTaskNo">
+     update ymd_event_center_topic_task_record set error_retry_count=error_retry_count+1 where task_no=#{taskNo}
+  </update>
+  <update id="updateRetryCountByTaskNo">
+     update ymd_event_center_topic_task_record set retry_count=retry_count+1 where task_no=#{taskNo}
+  </update>
+  <select id="selectTaskByLikeMsgBody" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_task_record where task_msg_body=#{taskMsgBody}
+  </select>
+  <update id="updatePushStatus">
+    update ymd_event_center_topic_task_record set push_status=0
+  </update>
+  <update id="clearReset">
+    update ymd_event_center_topic_task_record set push_status=0,retry_count=0,error_retry_count=0
+  </update>
+  <delete id="delTaskBefore1Month">
+    delete from ymd_event_center_topic_task_record  where create_time <![CDATA[<]]>  DATE_SUB(NOW(),INTERVAL 1 MONTH) or retry_count>3;
+  </delete>
+
+</mapper>

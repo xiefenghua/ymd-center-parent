@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterTaskResultMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTaskResult" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="auth_id" property="authId" jdbcType="VARCHAR" />
+    <result column="task_no" property="taskNo" jdbcType="VARCHAR" />
+    <result column="auth_no" property="authNo" jdbcType="VARCHAR" />
+    <result column="lock_id" property="lockId" jdbcType="VARCHAR" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="channel_type" property="channelType" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="channel_value" property="channelValue" jdbcType="LONGVARCHAR" />
+    <result column="result" property="result" jdbcType="LONGVARCHAR" />
+    <result column="partition_date" property="partitionDate" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="selectListPage" resultMap="BaseResultMap">
+    select * from t_authorize_center_task_result where 1=1
+    <if test="startDate != null and startDate != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+    </if>
+    <if test="endDate != null and endDate != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    </if>
+    <if test="taskNo !=null  and taskNo != ''">
+      and task_no like CONCAT('%',#{taskNo},'%' )
+    </if>
+    <if test="status !=null">
+      and status =#{status}
+    </if>
+    <if test="channelType !=null and channelType != ''">
+      and channel_type =#{channelType}
+    </if>
+    <if test="lockId !=null and lockId != ''">
+      and lock_id =#{lockId}
+    </if>
+  </select>
+
+  <select id="selectByAuthNo" resultMap="BaseResultMap">
+      select * from t_authorize_center_task_result where auth_no=#{authNo} limit 1;
+  </select>
+  <select id="selectByTaskNo" resultMap="BaseResultMap">
+     select * from t_authorize_center_task_result where task_no=#{taskNo};
+  </select>
+  <select id="selectCardCountByTaskNo" resultMap="BaseResultMap">
+    select * from t_authorize_center_task_result where task_no=#{taskNo} and status=1 and
+    channel_type in
+    <foreach collection="cardList" item="cardType" close=")" open="(" separator=",">
+      #{cardType}
+    </foreach>
+  </select>
+  <select id="selectLockCountByTaskNo" resultMap="BaseResultMap">
+    select distinct lock_id from t_authorize_center_task_result where task_no=#{taskNo}
+  </select>
+  <delete id="delTaskResultBefore1Month">
+    delete from t_authorize_center_task_result  where create_time <![CDATA[<]]>  DATE_SUB(NOW(),INTERVAL 1 MONTH);
+  </delete>
+</mapper>

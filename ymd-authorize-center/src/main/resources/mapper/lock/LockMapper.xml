@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.lock.LockMapper">
+    <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.lock.Lock">
+        <id column="lockId" property="lockid" jdbcType="VARCHAR"/>
+        <result column="lockName" property="lockname" jdbcType="VARCHAR"/>
+        <result column="lockType" property="locktype" jdbcType="CHAR"/>
+        <result column="battery" property="battery" jdbcType="VARCHAR"/>
+        <result column="softVersion" property="softversion" jdbcType="VARCHAR"/>
+        <result column="featureVersion" property="featureVersion" jdbcType="VARCHAR"/>
+        <result column="firmwareVersion" property="firmwareVersion" jdbcType="VARCHAR"/>
+        <result column="feature_vendor" property="featureVendor" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="CHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="mac" property="mac" jdbcType="VARCHAR"/>
+        <result column="ventor" property="ventor" jdbcType="VARCHAR"/>
+        <result column="checkByte" property="checkbyte" jdbcType="VARCHAR"/>
+        <result column="pwdTable" property="pwdtable" jdbcType="VARCHAR"/>
+        <result column="qrContent" property="qrcontent" jdbcType="VARCHAR"/>
+        <result column="address2" property="address2" jdbcType="VARCHAR"/>
+        <result column="createTime" property="createtime" jdbcType="VARCHAR"/>
+        <result column="addressQr" property="addressqr" jdbcType="VARCHAR"/>
+        <result column="longtitude" property="longtitude" jdbcType="VARCHAR"/>
+        <result column="latitude" property="latitude" jdbcType="VARCHAR"/>
+        <result column="addrCode" property="addrcode" jdbcType="VARCHAR"/>
+        <result column="authIdcardNeedRealName" property="authidcardneedrealname" jdbcType="CHAR"/>
+        <result column="officeMode" property="officemode" jdbcType="CHAR"/>
+        <result column="settingsData" property="settingsdata" jdbcType="VARCHAR"/>
+        <result column="addUser" property="adduser" jdbcType="VARCHAR"/>
+        <result column="hdVer" property="hdver" jdbcType="VARCHAR"/>
+        <result column="mcu" property="mcu" jdbcType="VARCHAR"/>
+        <result column="isSupervise" property="issupervise" jdbcType="CHAR"/>
+        <result column="locationCode" property="locationcode" jdbcType="VARCHAR"/>
+        <result column="building" property="building" jdbcType="VARCHAR"/>
+        <result column="unit" property="unit" jdbcType="VARCHAR"/>
+        <result column="house" property="house" jdbcType="VARCHAR"/>
+        <result column="room" property="room" jdbcType="VARCHAR"/>
+        <result column="rssi" property="rssi" jdbcType="VARCHAR"/>
+        <result column="isParent" property="isparent" jdbcType="CHAR"/>
+        <result column="isCharge" property="ischarge" jdbcType="CHAR"/>
+        <result column="lockAttribute" property="lockattribute" jdbcType="VARCHAR"/>
+        <result column="activeDays" property="activedays" jdbcType="VARCHAR"/>
+        <result column="agentCode" property="agentcode" jdbcType="VARCHAR"/>
+        <result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP"/>
+        <result column="orgId" property="orgid" jdbcType="VARCHAR"/>
+        <result column="orgName" property="orgname" jdbcType="VARCHAR"/>
+
+        <result column="DEVICE_TYPE" property="deviceType" jdbcType="VARCHAR"/>
+        <result column="RKSJ" property="rksj" jdbcType="TIMESTAMP"/>
+        <result column="serviceUnitPrice" property="serviceUnitprice" jdbcType="NUMERIC"/>
+        <result column="freeDays" property="freeDays" jdbcType="INTEGER"/>
+
+        <result column="roomId" property="roomId" />
+        <result column="houseId" property="houseId"/>
+
+        <result column="ownerName" property="ownerName" jdbcType="VARCHAR"/>
+        <result column="adminName" property="adminName" jdbcType="VARCHAR"/>
+        <result column="userCount" property="userCount" jdbcType="INTEGER"/>
+        <result column="gateMac" property="gateMac" jdbcType="VARCHAR"/>
+        <result column="deviceMode" property="deviceMode" jdbcType="VARCHAR"/>
+        <result column="commMode" property="commMode" jdbcType="VARCHAR"/>
+        <result column="isBind" property="isBind" jdbcType="VARCHAR"/>
+
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="idcardNo" property="idcardNo" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+
+        <result column="startTime" property="startTime"/>
+        <result column="endTime" property="endTime"/>
+
+        <result column="isHealthCode" property="isHealthCode" jdbcType="INTEGER"/>
+        <result column="isRegistration" property="isRegistration" jdbcType="INTEGER"/>
+        <result column="isCardNoDeCode" property="isCardNoDeCode" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="selectByMac" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from `lock`.`t_hzbit_lock` where mac = #{mac,jdbcType=VARCHAR} limit 1;
+    </select>
+    <select id="selectByLockId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from `lock`.`t_hzbit_lock` where lockId = #{lockId} limit 1;
+    </select>
+    <insert id="insertOpenLock" >
+        insert into `lock`.t_hzbit_open_lock(username, `time`, lockId, msg, longtitude,
+                                            latitude,address,`type`,createTime,remark )
+        values (#{userName}, #{time}, #{lockId}, #{msg}, #{longtitude}, #{latitude}, #{address}, #{type}
+        , now(), #{remark})
+    </insert>
+</mapper>

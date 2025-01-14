@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.eventCenter.mapper.EventCenterLogMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.eventCenter.model.vo.EventCenterLog" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="topic" property="topic" jdbcType="VARCHAR" />
+    <result column="task_no" property="taskNo" jdbcType="VARCHAR" />
+    <result column="log_type" property="logType" jdbcType="VARCHAR" />
+    <result column="weight" property="weight" jdbcType="BIGINT" />
+    <result column="post_content" property="postContent" jdbcType="VARCHAR" />
+    <result column="result_code" property="resultCode" jdbcType="VARCHAR" />
+    <result column="post_time" property="postTime" jdbcType="BIGINT" />
+    <result column="retry_count" property="retryCount" jdbcType="INTEGER" />
+    <result column="create_auth_user_id" property="createAuthUserId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="param_body" property="paramBody" jdbcType="LONGVARCHAR" />
+    <result column="result" property="result" jdbcType="LONGVARCHAR" />
+    <result column="partition_date" property="partitionDate" jdbcType="INTEGER" />
+  </resultMap>
+  <select id="selectEventCenterLogPage"  resultMap="BaseResultMap">
+    select distinct * from ymd_event_center_log
+    <where>
+      <if test="topic != null and topic != ''">
+        and topic like concat('%',#{topic},'%')
+      </if>
+      <if test="logType != null and logType != ''">
+        and  log_type=#{jobType}
+      </if>
+      <if test="taskNo != null and taskNo != ''">
+        and  task_no=#{taskNo}
+      </if>
+      <if test="postContent != null and postContent != ''">
+        and  post_content like concat('%',#{postContent},'%')
+      </if>
+      <if test="startTime != null and startTime != ''">
+        AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+      </if>
+      <if test="endTime != null and endTime != ''">
+        AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+  <select id="selectEventCenterLogByTaskNo"  resultMap="BaseResultMap">
+    select distinct * from ymd_event_center_log where topic =#{topic} and task_no=#{taskNo} limit 1;
+  </select>
+  <select id="selectExistByTaskNo" resultType="int">
+    select count(1) from ymd_event_center_log where task_no=#{taskNo} limit 1;
+  </select>
+  <select id="selectLogListByTaskNo" resultMap="BaseResultMap">
+    select * from ymd_event_center_log where task_no=#{taskNo};
+  </select>
+  <delete id="delBefore1Month">
+    delete from t_authorize_center_authorize_log  where create_time <![CDATA[<]]>  DATE_SUB(NOW(),INTERVAL 1 MONTH);
+  </delete>
+
+</mapper>

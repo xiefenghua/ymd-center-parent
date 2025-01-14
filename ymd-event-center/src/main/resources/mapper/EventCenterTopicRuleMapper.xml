@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.eventCenter.mapper.EventCenterTopicRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.eventCenter.model.vo.EventCenterTopicRule" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="topic_id" property="topicId" jdbcType="BIGINT" />
+    <result column="rule_id" property="ruleId" jdbcType="BIGINT" />
+    <result column="create_auth_user_id" property="createAuthUserId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectByTopicIdAndRuleId" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_rule where topic_id=#{topicId} and rule_id=#{ruleId}
+  </select>
+
+</mapper>

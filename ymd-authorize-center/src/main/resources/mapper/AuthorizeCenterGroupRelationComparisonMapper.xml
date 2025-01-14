@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterGroupRelationComparisonMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterGroupRelationComparison" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="group_auth_id" property="groupAuthId" jdbcType="BIGINT" />
+    <result column="group_type" property="groupType" jdbcType="TINYINT" />
+    <result column="group_id" property="groupId" jdbcType="BIGINT" />
+    <result column="group_user_lock_id" property="groupUserLockId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="selectGroupUserLockIdByGroup" resultType="string">
+    select group_user_lock_id from t_authorize_center_group_relation_comparison
+     where group_auth_id=#{groupAuthId} and group_type=#{groupType} and group_id=#{groupId} order by group_user_lock_id
+  </select>
+
+  <delete id="deleteByGroupAuthId">
+    delete from t_authorize_center_group_relation_comparison where group_auth_id=#{groupAuthId}
+  </delete>
+
+  <insert id="batchInsertRelationComparison">
+    <if test="groupList!=null">
+      insert into t_authorize_center_group_relation_comparison (group_auth_id,group_type,group_id,group_user_lock_id,create_time)
+      VALUES
+      <foreach collection="groupList" separator="," item="groupUserLockIdItem">
+        (
+        #{groupAuthId},#{groupType},#{groupId},#{groupUserLockIdItem},now()
+        )
+      </foreach>
+    </if>
+  </insert>
+</mapper>

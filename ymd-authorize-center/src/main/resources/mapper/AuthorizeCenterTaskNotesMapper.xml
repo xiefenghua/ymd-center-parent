@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterTaskNotesMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterTaskNotes" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="task_no" property="taskNo" jdbcType="VARCHAR" />
+    <result column="auth_no" property="authNo" jdbcType="VARCHAR" />
+    <result column="auth_content" property="authContent" jdbcType="LONGVARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="selectListPage" resultMap="BaseResultMap">
+    select * from t_authorize_center_task_notes where 1=1
+    <if test="startDate != null and startDate != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startDate}, '%Y-%m-%d')
+    </if>
+    <if test="endDate != null and endDate != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+    </if>
+    <if test="taskNo !=null  and taskNo != ''">
+      and task_no like CONCAT('%',#{taskNo},'%' )
+    </if>
+  </select>
+
+  <select id="selectTaskNotesPageByTaskNo" resultMap="BaseResultMap">
+     select * from t_authorize_center_task_notes where task_no=#{taskNo}
+  </select>
+  <select id="selectTaskNotesCountByTaskNo" resultType="long">
+     select count(1) from t_authorize_center_task_notes where task_no=#{taskNo}
+  </select>
+  <select id="selectTaskNotesByAuthNo" resultMap="BaseResultMap">
+      select * from t_authorize_center_task_notes where auth_no=#{authNo} limit 1;
+  </select>
+  <delete id="deleteTaskNotesByTaskNo">
+        delete from t_authorize_center_task_notes where task_no=#{taskNo}
+  </delete>
+  <delete id="delTaskNotesBefore1Month">
+    delete from t_authorize_center_task_notes  where create_time <![CDATA[<]]>  DATE_SUB(NOW(),INTERVAL 1 MONTH);
+  </delete>
+  <delete id="deleteTaskNotesById">
+    delete from t_authorize_center_task_notes  where id=#{id}
+  </delete>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.eventCenter.mapper.EventCenterTopicRegisterMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.eventCenter.model.vo.EventCenterTopicRegister" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="topic" property="topic" jdbcType="VARCHAR" />
+    <result column="job_type" property="jobType" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="opt_type" property="optType" jdbcType="VARCHAR" />
+    <result column="mqtt_type" property="mqttType" jdbcType="VARCHAR" />
+    <result column="call_back_type" property="callBackType" jdbcType="TINYINT" />
+    <result column="http_url" property="httpUrl" jdbcType="VARCHAR" />
+    <result column="class_name" property="className" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_auth_user_id" property="createAuthUserId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <select id="selectByTopic" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_register where topic=#{topic} and status!=0
+  </select>
+  <select id="selectByType" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_register where `type`=#{type} and status!=0
+  </select>
+  <select id="selectByJobType" resultMap="BaseResultMap">
+    select * from ymd_event_center_topic_register where job_type=#{jobType} and status!=0
+  </select>
+
+  <select id="selectAllMqttTopicList" resultType="String">
+    select topic from ymd_event_center_topic_register where topic like CONCAT(#{topicFix},'%') and mqtt_type="mqtt" and status!=0
+  </select>
+  <select id="selectSystemInitAllRabbitMqTopic" resultMap="BaseResultMap">
+    select *,r.rule_action ruleAction from ymd_event_center_topic_register tr left join ymd_event_center_topic_rule trr
+        on tr.id=trr.topic_id left join (select * from ymd_event_center_rule where rule_status=1 and rule_is_all=0) r
+        on trr.rule_id=r.id
+    where tr.mqtt_type="rabbitmq" and tr.status!=0
+  </select>
+
+  <select id="selectAllRabbitMqJobType" resultType="string">
+     select DISTINCT job_type jobType from ymd_event_center_topic_register where mqtt_type="rabbitmq" and  status!=0
+  </select>
+
+  <select id="selectEventCenterTopicRegisterPage"  resultMap="BaseResultMap">
+    select distinct * from ymd_event_center_topic_register where status!=0
+    <if test="topic != null and topic != ''">
+      and topic like concat('%',#{topic},'%')
+    </if>
+    <if test="jobType != null and jobType != ''">
+      and  job_type=#{jobType}
+    </if>
+    <if test="type != null and type != ''">
+      and  type=#{type}
+    </if>
+    <if test="optType != null and optType != ''">
+      and  opt_type=#{optType}
+    </if>
+    <if test="status != null">
+      and  status=#{status}
+    </if>
+    <if test="remark != null and remark != ''">
+      and remark like concat('%',#{remark},'%')
+    </if>
+    <if test="startTime != null and startTime != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+    </if>
+    <if test="endTime != null and endTime != ''">
+      AND DATE_FORMAT(create_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+    </if>
+    order by create_time desc
+  </select>
+
+</mapper>

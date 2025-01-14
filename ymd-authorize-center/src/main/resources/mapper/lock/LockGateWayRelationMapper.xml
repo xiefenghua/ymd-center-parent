@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.lock.LockGateWayRelationMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.lock.LockGateWayRelation" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="lockId" property="lockid" jdbcType="VARCHAR" />
+    <result column="gateId" property="gateid" jdbcType="VARCHAR" />
+  </resultMap>
+  <!--根据lockId查询-->
+  <select id="getGateRelationInfoByLockId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <if test="lockId!=null and lockId!=''">
+      select lockId,gateId from `lock`.t_hzbit_lock_gate_relation where lockId=#{lockId}
+    </if>
+  </select>
+</mapper>

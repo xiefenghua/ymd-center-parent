@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.lock.EDeviceBaseInfoMapper">
+
+    <resultMap type="com.ymd.cloud.authorizeCenter.model.lock.EDeviceBaseInfo" id="EDeviceBaseInfoMap">
+        <result property="deviceId" column="DEVICE_ID" jdbcType="VARCHAR"/>
+        <result property="productId" column="PRODUCT_ID" jdbcType="INTEGER"/>
+        <result property="deviceMac" column="DEVICE_MAC" jdbcType="VARCHAR"/>
+        <result property="deviceName" column="DEVICE_NAME" jdbcType="VARCHAR"/>
+        <result property="deviceType" column="DEVICE_TYPE" jdbcType="INTEGER"/>
+        <result property="deviceModel" column="DEVICE_MODEL" jdbcType="VARCHAR"/>
+        <result property="organId" column="ORGAN_ID" jdbcType="VARCHAR"/>
+        <result property="ventor" column="VENTOR" jdbcType="VARCHAR"/>
+        <result property="hardVersion" column="HARD_VERSION" jdbcType="VARCHAR"/>
+        <result property="hardUpgradeVersion" column="HARD_UPGRADE_VERSION" jdbcType="VARCHAR"/>
+        <result property="communModeId" column="COMMUN_MODE_ID" jdbcType="INTEGER"/>
+        <result property="communHardVer" column="COMMUN_HARD_VER" jdbcType="VARCHAR"/>
+        <result property="communSoftVer" column="COMMUN_SOFT_VER" jdbcType="VARCHAR"/>
+        <result property="isPublic" column="IS_PUBLIC" jdbcType="VARCHAR"/>
+        <result property="longtitude" column="LONGTITUDE" jdbcType="VARCHAR"/>
+        <result property="latitude" column="LATITUDE" jdbcType="VARCHAR"/>
+        <result property="address" column="ADDRESS" jdbcType="VARCHAR"/>
+        <result property="areaCode" column="AREA_CODE" jdbcType="VARCHAR"/>
+        <result property="qaDur" column="QA_DUR" jdbcType="NUMERIC"/>
+        <result property="adminUser" column="ADMIN_USER" jdbcType="VARCHAR"/>
+        <result property="ownerUser" column="OWNER_USER" jdbcType="VARCHAR"/>
+        <result property="state" column="STATE" jdbcType="VARCHAR"/>
+        <result property="rksj" column="RKSJ" jdbcType="TIMESTAMP"/>
+        <result property="rkUser" column="RK_USER" jdbcType="VARCHAR"/>
+        <result property="activeSj" column="ACTIVE_SJ" jdbcType="TIMESTAMP"/>
+        <result property="activeUserId" column="ACTIVE_USER_ID" jdbcType="VARCHAR"/>
+        <result property="firstBindSj" column="FIRST_BIND_SJ" jdbcType="TIMESTAMP"/>
+        <result property="curBindSj" column="CUR_BIND_SJ" jdbcType="TIMESTAMP"/>
+        <result property="primaryAgentDm" column="PRIMARY_AGENT_DM" jdbcType="VARCHAR"/>
+        <result property="secondAgentDm" column="SECOND_AGENT_DM" jdbcType="VARCHAR"/>
+        <result property="thirdAgentDm" column="THIRD_AGENT_DM" jdbcType="VARCHAR"/>
+        <result property="fourAgentDm" column="FOUR_AGENT_DM" jdbcType="VARCHAR"/>
+        <result property="firstUnitprice" column="FIRST_UNITPRICE" jdbcType="NUMERIC"/>
+        <result property="secondUnitprice" column="SECOND_UNITPRICE" jdbcType="NUMERIC"/>
+        <result property="thirdUnitprice" column="THIRD_UNITPRICE" jdbcType="NUMERIC"/>
+        <result property="fourUnitprice" column="FOUR_UNITPRICE" jdbcType="NUMERIC"/>
+        <result property="isCharge" column="IS_CHARGE" jdbcType="VARCHAR"/>
+        <result property="expires" column="EXPIRES" jdbcType="TIMESTAMP"/>
+        <result property="pauseDate" column="PAUSE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="pauseMaxTimes" column="PAUSE_MAX_TIMES" jdbcType="INTEGER"/>
+        <result property="pauseCumsumTimes" column="PAUSE_CUMSUM_TIMES" jdbcType="INTEGER"/>
+        <result property="pauseRate" column="PAUSE_RATE" jdbcType="NUMERIC"/>
+        <result property="initFreeDays" column="INIT_FREE_DAYS" jdbcType="INTEGER"/>
+        <result property="extendDays" column="EXTEND_DAYS" jdbcType="INTEGER"/>
+        <result property="serviceUnitprice" column="SERVICE_UNITPRICE" jdbcType="NUMERIC"/>
+        <result property="organName" column="ORGAN_NAME" jdbcType="VARCHAR"/>
+        <result property="deviceSecret" column="DEVICE_SECRET" jdbcType="VARCHAR"/>
+        <result property="battery" column="battery" jdbcType="VARCHAR"/>
+        <result property="lockType" column="lockType" jdbcType="VARCHAR"/>
+        <result property="onlineTime" column="online_time"/>
+        <result property="onlineStatus" column="online_status"/>
+        <result property="building" column="building" jdbcType="VARCHAR"/>
+        <result property="room" column="room" jdbcType="VARCHAR"/>
+        <result column="deviceMode" property="deviceMode" jdbcType="VARCHAR"/>
+        <result column="commMode" property="commMode" jdbcType="VARCHAR"/>
+        <result column="lockType" property="lockType" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectResourceConfig" resultType="com.ymd.cloud.authorizeCenter.model.lock.ResourceConfig" parameterType="com.ymd.cloud.authorizeCenter.model.lock.ResourceConfig">
+        select * FROM ymd_iot.s_resource_config WHERE MQTT_TYPE =#{mqttType} and RES_TYPE_ID =#{resTypeId} and YXBZ=#{yxbz} limit 1;
+    </select>
+    <select id="selectMqttTypeByGateMac" resultType="int">
+        select gd.mqtt_type from ymd_iot.e_device_base_info dbi,ymd_iot.e_gate_device gd where gd.DEVICE_ID=dbi.DEVICE_ID and
+        dbi.DEVICE_MAC =#{deviceMac} and dbi.STATE = '1'
+    </select>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymd.cloud.authorizeCenter.mapper.AuthorizeCenterGroupUserDeviceAuthorizeMapper" >
+  <resultMap id="BaseResultMap" type="com.ymd.cloud.authorizeCenter.model.AuthorizeCenterGroupUserDeviceAuthorize" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="group_type" property="groupType" jdbcType="VARCHAR" />
+    <result column="user_group_id" property="userGroupId" jdbcType="BIGINT" />
+    <result column="device_group_id" property="deviceGroupId" jdbcType="BIGINT" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="last_auth_update_time" property="lastAuthUpdateTime" jdbcType="TIMESTAMP" />
+    <result column="action_status" property="actionStatus" jdbcType="TINYINT" />
+    <result column="delay_task_no" property="delayTaskNo" jdbcType="VARCHAR" />
+    <result column="sync_task_no" property="syncTaskNo" jdbcType="LONGVARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result property="remark" column="remark" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="selectInfoByUserDeviceGroup" resultMap="BaseResultMap">
+        select * from t_authorize_center_group_user_device_authorize where org_id=#{orgId} and user_group_id=#{userGroupId} and device_group_id=#{deviceGroupId} limit 1;
+  </select>
+  <update id="updateSyncTaskNo">
+        update t_authorize_center_group_user_device_authorize SET sync_task_no=#{syncTaskNo},update_time=now() WHERE id=#{id}
+  </update>
+  <select id="selectInfoBySyncTaskNo" resultMap="BaseResultMap">
+        select * from t_authorize_center_group_user_device_authorize WHERE sync_task_no like concat('%',#{syncTaskNo},'%') limit 1;
+  </select>
+</mapper>
